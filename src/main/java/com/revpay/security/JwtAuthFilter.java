@@ -17,17 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final RevPayApplication revPayApplication;
-
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
-    JwtAuthFilter(RevPayApplication revPayApplication) {
-        this.revPayApplication = revPayApplication;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -60,4 +54,3 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-

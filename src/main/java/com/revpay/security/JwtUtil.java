@@ -35,4 +35,3 @@ public class JwtUtil {
         return extractUsername(token).equals(username);
     }
 }
-

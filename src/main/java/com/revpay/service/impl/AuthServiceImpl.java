@@ -20,6 +20,7 @@ import com.revpay.repository.RoleRepository;
 import com.revpay.repository.UserRepository;
 import com.revpay.security.CustomUserDetails;
 import com.revpay.service.interfaces.AuthService;
+import com.revpay.service.interfaces.WalletService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -34,6 +35,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private WalletService walletService;
     
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -58,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
         user.setCreatedAt(LocalDateTime.now());
 
         userRepository.save(user);
+        walletService.createWalletForUser(user);
     }
 
 //    @Override
