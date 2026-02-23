@@ -4,6 +4,7 @@ import com.revpay.entity.Loan;
 import com.revpay.entity.User;
 import com.revpay.repository.LoanRepository;
 import com.revpay.service.interfaces.LoanService;
+import com.revpay.service.interfaces.NotificationService;
 import com.revpay.service.interfaces.UserService;
 import com.revpay.service.interfaces.WalletService;
 import com.revpay.util.EmiCalculator;
@@ -19,6 +20,7 @@ public class LoanServiceImpl implements LoanService {
     @Autowired private LoanRepository loanRepository;
     @Autowired private UserService userService;
     @Autowired private WalletService walletService;
+    @Autowired private NotificationService notificationService;
 
     private final double INTEREST = 12.0; // fixed interest
 
@@ -64,7 +66,12 @@ public class LoanServiceImpl implements LoanService {
                 loan.getUser(),
                 loan.getPrincipalAmount(),
                 "Loan credited"
+           
         );
+        
+        notificationService.notify(loan.getUser(),
+                "Loan Approved",
+                "₹" + loan.getPrincipalAmount() + " credited to wallet");
     }
 
     @Override
@@ -87,6 +94,10 @@ public class LoanServiceImpl implements LoanService {
             loan.setStatus("CLOSED");
 
         loanRepository.save(loan);
+        
+        notificationService.notify(loan.getUser(),
+                "EMI Paid",
+                "EMI ₹" + loan.getEmiAmount() + " deducted");
     }
 
     @Override

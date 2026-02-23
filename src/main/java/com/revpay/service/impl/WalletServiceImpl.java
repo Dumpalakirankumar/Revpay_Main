@@ -15,6 +15,7 @@ import com.revpay.repository.TransactionRepository;
 import com.revpay.repository.UserRepository;
 import com.revpay.repository.WalletRepository;
 import com.revpay.security.CustomUserDetails;
+import com.revpay.service.interfaces.NotificationService;
 import com.revpay.service.interfaces.UserService;
 import com.revpay.service.interfaces.WalletService;
 import com.revpay.entity.PaymentMethod;
@@ -40,7 +41,8 @@ public class WalletServiceImpl implements WalletService {
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
 
-    
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public void createWalletForUser(User user) {
@@ -150,6 +152,14 @@ public class WalletServiceImpl implements WalletService {
         receiveTxn.setCreatedAt(LocalDateTime.now());
         receiveTxn.setRemark("Received from " + sender.getEmail());
         transactionRepository.save(receiveTxn);
+        
+        notificationService.notify(sender,
+                "Money Sent",
+                "You sent ₹" + amount + " to " + receiver.getEmail());
+
+        notificationService.notify(receiver,
+                "Money Received",
+                "You received ₹" + amount + " from " + sender.getEmail());
     }
 
     @Override
